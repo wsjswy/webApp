@@ -1,6 +1,5 @@
 
-from  urllib import parse
-
+import  urlparse
 
 DEFAULT_ENCODING = "utf-8"
 
@@ -13,11 +12,14 @@ class URL:
         if not url.startswith("https://") and not url.startswith("http://"):
             url = "http://" + url
 
-        urlres = parse.urlparse(url)
+        urlres = urlparse.urlparse(url)
         self.scheme = urlres.scheme
 
         if urlres.port is None:
-            self.port = 80
+            if urlres.scheme == 'https':
+                self.port = 443
+            else:
+                self.port = 80
         else:
             self.port = urlres.port
 
@@ -66,7 +68,7 @@ class URL:
         u_url = self._unicode_url
         if not self._change or u_url is None:
             data = (self.scheme, self.netloc, self.path, self.params, self.qs, self.fragment)
-            dataurl = parse.urlunparse(data)
+            dataurl = urlparse.urlunparse(data)
             try:
                 u_url = str(dataurl)
             except UnicodeDecodeError:

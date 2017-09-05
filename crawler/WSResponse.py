@@ -1,3 +1,6 @@
+#coding=utf-8
+
+
 from  crawler.WSRequest import WSRequest
 from  crawler.URL import  URL
 
@@ -12,7 +15,12 @@ DEFAULT_CHARSET = DEFAULT_ENCODING
 
 def from_requests_response(res, req_url):
 
-    print("fix me ")
+    code = res.status_code
+    msg  = res.reason
+    headers = res.headers
+    body = res.content
+    charset = res.encoding
+    return WSResponse(code, headers, body, req_url, msg, charset = charset)
 
 
 
@@ -98,7 +106,7 @@ class WSResponse:
         return  self._charset
 
     def get_lowercase_headers(self):
-        return dict((k.lower(), v) for k, v in self._headers.iteritems())
+        return dict((k.lower(), v) for k, v in self._headers.items())
 
     def _charset_handing(self):
         lowercase_headers = self.get_lowercase_headers()
@@ -107,7 +115,8 @@ class WSResponse:
         #原始的body数据， 需要进行编码处理
         rawbody = self._raw_body
 
-        if charset != DEFAULT_CHARSET and lowercase_headers.has_key('content-type'):
+       # if charset != DEFAULT_CHARSET and lowercase_headers.has_key('content-type'):
+        if charset != DEFAULT_CHARSET and 'content-type' in lowercase_headers:
             charset_mo = re.search('charset = \s*?([\w-]+)', lowercase_headers['content-type'])
             if charset_mo:
                 charset = charset_mo.group()[0].lower().strip()
@@ -142,7 +151,8 @@ class WSResponse:
             result_string += '\r\n'.join(h + ':' + hv for h, hv in self.headers.items()) + '\r\n'
 
         if self.body:
-            result_string += '\r\n' + self.body.encode("utf-8")
+            #result_string += '\r\n' + self.body.encode("utf-8")
+            result_string += '\r\n' + self.body
 
         return result_string
 

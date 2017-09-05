@@ -1,7 +1,9 @@
+#coding=utf-8
+
 import  time
 import  socket
-import  httplib2
 import  requests
+import  httplib
 
 from  crawler.URL import URL
 from  crawler.WSRequest import WSRequest
@@ -17,7 +19,8 @@ class wCurl:
         self._scan_signature = ''
         self._scan_cookies = ''
         self._scan_proxies = ''
-
+        httplib.HTTPConnection.debuglevel = 0
+        httplib.HTTPSConnection.debuglevel = 0
 
      def get_default_headers(self, headers):
 
@@ -90,7 +93,7 @@ if __name__ == '__main__':
 
     curl = wCurl()
 
-    urlStr = "http://www.baidu.com"
+    urlStr = "https://www.paypalm.cn"
 
     res = curl.get(urlStr)
 
